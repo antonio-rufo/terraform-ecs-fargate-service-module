@@ -159,10 +159,9 @@ resource "aws_security_group_rule" "ingress_through_https" {
 }
 
 module "ecs-autoscaling" {
-  count = var.enable_autoscaling ? 1 : 0
+  # count = var.enable_autoscaling ? 1 : 0
 
-  source  = "cn-terraform/ecs-service-autoscaling/aws"
-  version = "1.0.1"
+  source = "github.com/antonio-rufo/terraform-ecs-service-autoscaling-module"
 
   name_prefix               = var.name_prefix
   ecs_cluster_name          = var.ecs_cluster_name
