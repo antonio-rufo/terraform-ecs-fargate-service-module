@@ -12,6 +12,14 @@ variable "vpc_id" {
   description = "ID of the VPC"
 }
 
+variable "private_subnets_ids" {
+  description = "ID of the VPC"
+}
+
+variable "public_subnets_ids" {
+  description = "ID of the VPC"
+}
+
 ###############################################################################
 # AWS ECS SERVICE
 ###############################################################################

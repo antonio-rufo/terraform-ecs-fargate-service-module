@@ -50,6 +50,60 @@
 # }
 
 ###############################################################################
+# AWS LOAD BALANCER
+###############################################################################
+module "ecs-alb" {
+  source = "github.com/antonio-rufo/terraform-alb-ecs-module"
+  # source = "../../../../Repos/antonio-repos/terraform-alb-ecs-module/"
+
+  name_prefix = var.name_prefix
+  vpc_id      = var.vpc_id
+
+  # S3 Bucket
+  block_s3_bucket_public_access = false
+  force_destroy_log_bucket      = true
+
+  # Application Load Balancer
+  internal                         = false
+  security_groups                  = []
+  drop_invalid_header_fields       = false
+  private_subnets                  = var.private_subnets_ids
+  public_subnets                   = var.public_subnets_ids
+  idle_timeout                     = 60
+  enable_deletion_protection       = false
+  enable_cross_zone_load_balancing = false
+  enable_http2                     = true
+  ip_address_type                  = "ipv4"
+
+  # Access Control to Application Load Balancer
+  # http_ports                    = var.lb_http_ports
+  http_ingress_cidr_blocks     = ["0.0.0.0/0"]
+  http_ingress_prefix_list_ids = []
+  # https_ports                   = var.lb_https_ports
+  https_ingress_cidr_blocks     = ["0.0.0.0/0"]
+  https_ingress_prefix_list_ids = []
+
+  # Target Groups
+  deregistration_delay          = 300
+  slow_start                    = 0
+  load_balancing_algorithm_type = "round_robin"
+  # stickiness                                    = var.lb_stickiness
+  target_group_health_check_enabled             = true
+  target_group_health_check_interval            = 30
+  target_group_health_check_path                = "/"
+  target_group_health_check_timeout             = 5
+  target_group_health_check_healthy_threshold   = 3
+  target_group_health_check_unhealthy_threshold = 3
+  target_group_health_check_matcher             = "200"
+
+  # Certificates
+  default_certificate_arn                         = "arn:aws:acm:ap-southeast-2:130541009828:certificate/40560dec-df11-456e-9cd6-0d8cce2fbb90"
+  ssl_policy                                      = null
+  additional_certificates_arn_for_https_listeners = []
+}
+
+
+###############################################################################
 # AWS ECS SERVICE
 ###############################################################################
 resource "aws_ecs_service" "service" {
